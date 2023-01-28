@@ -1,16 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
     [SerializeField] LayerMask terrainLayer;
-    private Rigidbody rb;
+    Rigidbody rb;
 
-    void Start()
+    PlayerInputActions playerControls;
+    InputAction rollControl;
+
+    bool isRolling = false;
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        
+        playerControls = new PlayerInputActions();
+        rollControl = playerControls.Player.Roll;
+    }
+
+    void Update()
+    {
+        RollSnowball();
     }
 
     void FixedUpdate()
@@ -34,9 +48,40 @@ public class PlayerController : MonoBehaviour
         return null;
     }
 
-    void MoveTowardsPosition(Vector3 position)
+    private void MoveTowardsPosition(Vector3 position)
     {
         Vector3 newPos = new Vector3(position.x, transform.position.y, position.z);
         rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime));
+    }
+
+    private void OnRollControlEnter(InputAction.CallbackContext context)
+    {
+        isRolling = true;
+    }
+    private void OnRollControlExit(InputAction.CallbackContext context)
+    {
+        FireSnowball();
+        isRolling = false;
+    }
+
+    private void RollSnowball()
+    {
+        
+    }
+    private void FireSnowball()
+    {
+        
+    }
+
+    void OnEnable()
+    {
+        rollControl.Enable();
+        rollControl.started += OnRollControlEnter;
+        rollControl.canceled += OnRollControlExit;
+    }
+
+    void OnDisable()
+    {
+        rollControl.Disable();
     }
 }
