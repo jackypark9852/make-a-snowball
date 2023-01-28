@@ -22,11 +22,6 @@ public class PlayerController : MonoBehaviour
         rollControl = playerControls.Player.Roll;
     }
 
-    void Update()
-    {
-        RollSnowball();
-    }
-
     void FixedUpdate()
     {
         Vector3? mouseCursorPosition = GetMouseCursorPosition();
@@ -54,8 +49,18 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, speed * Time.deltaTime));
     }
 
+    
+    void Update()
+    {
+        if (isRolling)
+        {
+            RollSnowball();
+        }
+    }
+
     private void OnRollControlEnter(InputAction.CallbackContext context)
     {
+        CreateSnowball();
         isRolling = true;
     }
     private void OnRollControlExit(InputAction.CallbackContext context)
@@ -64,6 +69,10 @@ public class PlayerController : MonoBehaviour
         isRolling = false;
     }
 
+    private void CreateSnowball()
+    {
+        
+    }
     private void RollSnowball()
     {
         
