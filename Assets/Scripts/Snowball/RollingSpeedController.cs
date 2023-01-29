@@ -8,6 +8,7 @@ public class RollingSpeedController : MonoBehaviour
 {
     private Animator _animator;
     private SphereCollider _collider; // The collider of the snowball
+    private bool _isRolling = true;
     private float _radius;
     private Vector3 _lastPosition;
     // Start is called before the first frame update
@@ -25,14 +26,29 @@ public class RollingSpeedController : MonoBehaviour
 
     private void Update()
     {
-        UpdateRadius();
-        float speed = GetSpeed();
-        _animator.speed = speed / _radius; // Set the speed parameter in the animator so that snowball rolls at correct speed
-        UpdateLastPosition();
+        if (_isRolling) // Turned off when the snowball is fired to prevent the animation from playing while the snowball is actually rolling using physics
+        {
+            UpdateRadius();
+            UpdateAnimatorSpeed();
+            UpdateLastPosition();
+        }
+    }
+    public void StopRolling()
+    {
+        _animator.speed = 0;
+        _isRolling = false;
+    }
+    public void StartRolling()
+    {
+        _isRolling = true;
     }
     private float GetSpeed()
     {
         return (transform.position - _lastPosition).magnitude / Time.deltaTime;
+    }
+    private void UpdateAnimatorSpeed()
+    {
+        _animator.speed = GetSpeed() / _radius;
     }
 
     private void UpdateRadius()
