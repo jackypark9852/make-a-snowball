@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -30,19 +31,20 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3? mouseCursorPosition = GetMouseCursorPosition();
-        if (mouseCursorPosition is not null)
+        Vector3? mousePosition = GetMousePosition();
+        if (mousePosition is not null)
         {
-            MoveTowardsPosition(mouseCursorPosition.Value);
-            Vector3? facedDirection = GetFacedDirection(mouseCursorPosition.Value);
-            if (facedDirection is not null)
+            // MoveTowardsPosition(mouseCursorPosition.Value);
+            Vector3? mouseDirection = GetMouseDirection(mousePosition.Value);
+            if (mouseDirection is not null)
             {
-                FaceDirectionOfMovement(facedDirection.Value);
+                MoveInDirection(transform.forward, GetMouseDistance(mousePosition.Value));
+                FaceDirectionOfMovement(mouseDirection.Value);
             }
         }
     }
 
-    private Vector3? GetMouseCursorPosition()
+    private Vector3? GetMousePosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -54,14 +56,21 @@ public class PlayerController : MonoBehaviour
         return null;
     }
 
-    private Vector3? GetFacedDirection(Vector3 position)
+    private Vector3? GetMouseDirection(Vector3 position)
     {
         Vector3 facedDirection = position - transform.position;
+        facedDirection.y = 0f;
         if (facedDirection == Vector3.zero)
         {
             return null;
         }
         return facedDirection.normalized;
+    }
+    private float GetMouseDistance(Vector3 position)
+    {
+        Vector3 facedDirection = position - transform.position;
+        facedDirection.y = 0f;
+        return facedDirection.magnitude;
     }
 
     private void MoveTowardsPosition(Vector3 position)
@@ -69,6 +78,20 @@ public class PlayerController : MonoBehaviour
         Vector3 newPos = new Vector3(position.x, transform.position.y, position.z);
         rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime));
     }
+
+    private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond)
+    {
+        Vector3 target = transform.position + direction * moveSpeed * Time.deltaTime;
+        float maxDistance = maxDistanceBeforeSpeedPerSecond * moveSpeed * Time.deltaTime;
+        rb.MovePosition(Vector3.MoveTowards(transform.position, target, maxDistance));
+    }
+
+    /*
+    private void MoveInMouseDirectionProjectedOntoFacedDirection(Vector3 facedDirection, Vector3 mouseDirection)  // May be incorrect
+    {
+        MoveInDirection(Vector3.Project(mouseDirection, facedDirection));
+    }
+    */
 
     private void FaceDirectionOfMovement(Vector3 direction)
     {
@@ -83,6 +106,10 @@ public class PlayerController : MonoBehaviour
         }
         Quaternion clampedDeltaRotation = Quaternion.AngleAxis(angle, axis);
         rb.MoveRotation(transform.rotation * clampedDeltaRotation);
+
+        // Look into
+        // Quaternion.FromToRotation
+        // Quaternion.RotateTowards
 
         // Quaternion newRotation = Quaternion.LookRotation(direction);
         // rb.MoveRotation(newRotation);

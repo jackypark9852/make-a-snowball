@@ -423,7 +423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: moveSpeed
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: rotationSpeed
@@ -431,7 +431,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: maxRotationSpeed
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410021, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: m_Camera
