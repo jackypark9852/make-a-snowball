@@ -12,6 +12,10 @@ public class SnowballlLogic : MonoBehaviour
     [SerializeField] private float _growthRateBeforeFire = 0.1f;
     [SerializeField] private float _growthRateAfterFire = 0.05f;
     [SerializeField] private float _maxRadius = 10.0f;
+    [Tooltip("The speed at which the snowball will despawn if it is not moving")]
+    [SerializeField] private float _despawnSpeedThreshold = 0.1f;
+    [SerializeField] private float _despawnTimeLimitSeconds = 20.0f;
+    private const float k_despawnCheckIntervalSeconds = 0.1f;
     private RollingSpeedController _rollingSpeedController;
     private SnowballCollision _snowballCollision;
     private Rigidbody _rigidbody;
@@ -53,6 +57,8 @@ public class SnowballlLogic : MonoBehaviour
         _rigidbody.useGravity = true; // Turn on gravity
         _rigidbody.velocity = initialVelocity; // Set the initial velocity of the snowball
         _collider.material = _firedPhysicsMaterial; // Set the physics material of the snowball to the fired physics material
+
+        StartCoroutine(DespawnOnStop()); // Start the coroutine to despawn the snowball when it stops
     }
 
     public float GetRadius()
@@ -83,5 +89,20 @@ public class SnowballlLogic : MonoBehaviour
             float scale = newRadius / radius;
             transform.localScale *= scale;
         }
+    }
+
+    private IEnumerator DespawnOnStop()
+    {
+        float elapsedTime = 0f;
+        while (_rigidbody.velocity.magnitude > _despawnSpeedThreshold)
+        {
+            elapsedTime += k_despawnCheckIntervalSeconds;
+            if (elapsedTime > _despawnTimeLimitSeconds)
+            {
+                break;
+            }
+            yield return new WaitForSeconds(k_despawnCheckIntervalSeconds);
+        }
+        Destroy(gameObject);
     }
 }
