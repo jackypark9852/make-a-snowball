@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour
     Vector3 prevPosition;
 
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float maxRotationSpeed = 60f;
+    [SerializeField] float maxNotRollingRotationSpeed = 360f;
+    [SerializeField] float maxRollingRotationSpeed = 120f;
+    [SerializeField] float deadzoneDistanceBeforeSpeedPerSecond = 0f;
     [SerializeField] LayerMask terrainLayer;
     Rigidbody rb;
 
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviour
             Vector3? mouseDirection = GetMouseDirection(mousePosition.Value);
             if (mouseDirection is not null)
             {
-                MoveInDirection(transform.forward, GetMouseDistance(mousePosition.Value));
+                MoveInDirection(transform.forward, GetMouseDistance(mousePosition.Value), deadzoneDistanceBeforeSpeedPerSecond, mousePosition.Value);
                 FaceDirectionOfMovement(mouseDirection.Value);
                 
                 speed = Vector3.Distance(prevPosition, transform.position) / Time.deltaTime;
@@ -89,11 +91,20 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime));
     }
 
-    private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond)
+    private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
         Vector3 target = transform.position + direction * moveSpeed * Time.deltaTime;
         float maxDistance = maxDistanceBeforeSpeedPerSecond * moveSpeed * Time.deltaTime;
-        rb.MovePosition(Vector3.MoveTowards(transform.position, target, maxDistance));
+        if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
+        {
+            maxDistance = 0f;
+        }
+        target = Vector3.MoveTowards(transform.position, target, maxDistance);
+        if ((intendedTarget - target).sqrMagnitude > (intendedTarget - transform.position).sqrMagnitude)
+        {
+            return;
+        }
+        rb.MovePosition(target);
     }
 
     /*
@@ -106,6 +117,15 @@ public class PlayerController : MonoBehaviour
     private void FaceDirectionOfMovement(Vector3 direction)
     {
         Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
+        float maxRotationSpeed;
+        if (isRolling)
+        {
+            maxRotationSpeed = maxRollingRotationSpeed;
+        }
+        else
+        {
+            maxRotationSpeed = maxNotRollingRotationSpeed;
+        }
         rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
 
         // For snap rotations:
@@ -115,7 +135,6 @@ public class PlayerController : MonoBehaviour
 
     private void SetWalkingAnimation()
     {
-        Debug.Log(speed);
         if (speed >= minWalkSpeed)
         {
             anim.SetBool("isWalking", true);
