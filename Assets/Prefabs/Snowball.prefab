@@ -77,6 +77,9 @@ MonoBehaviour:
     m_Bits: 136
   _firedPhysicsMaterial: {fileID: 13400000, guid: a880995eb3aa15a4a869b710a374fa06, type: 2}
   _model: {fileID: 7828463940611391345}
+  _growthRateBeforeFire: 0.1
+  _growthRateAfterFire: 0.05
+  _maxRadius: 5
 --- !u!1 &7828463940611391345
 GameObject:
   m_ObjectHideFlags: 0

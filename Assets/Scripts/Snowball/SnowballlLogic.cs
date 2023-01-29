@@ -9,8 +9,8 @@ public class SnowballlLogic : MonoBehaviour
     [SerializeField] private PhysicMaterial _firedPhysicsMaterial;
     [Tooltip("The model of the snowball/ gameobject that holds the rigidbody and collider")]
     [SerializeField] private GameObject _model;
-    [SerializeField] private float _growthRateBeforeFire = 1.0f;
-    [SerializeField] private float _growthRateAfterFire = 1.0f;
+    [SerializeField] private float _growthRateBeforeFire = 0.1f;
+    [SerializeField] private float _growthRateAfterFire = 0.05f;
     [SerializeField] private float _maxRadius = 10.0f;
     private RollingSpeedController _rollingSpeedController;
     private SnowballCollision _snowballCollision;
@@ -38,6 +38,7 @@ public class SnowballlLogic : MonoBehaviour
     {
         _velocity = (transform.position - _lastPosition) / Time.deltaTime;
         _lastPosition = transform.position;
+        UpdateSize();
     }
     public void StartRolling()
     {
@@ -76,8 +77,9 @@ public class SnowballlLogic : MonoBehaviour
         float radius = GetRadius();
         if (radius < _maxRadius)
         {
+            float distanceTravelled = _velocity.magnitude * Time.deltaTime;
             float growthRate = _isFired ? _growthRateAfterFire : _growthRateBeforeFire;
-            float newRadius = radius + growthRate * Time.deltaTime;
+            float newRadius = radius + growthRate * distanceTravelled;
             float scale = newRadius / radius;
             transform.localScale *= scale;
         }
