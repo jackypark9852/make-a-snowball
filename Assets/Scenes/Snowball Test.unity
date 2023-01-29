@@ -568,5 +568,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Anchor
       objectReference: {fileID: 0}
+    - target: {fileID: 7828463940611391301, guid: 57c0884d467f41a49a8af4a94f96fad6, type: 3}
+      propertyPath: m_AngularDrag
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57c0884d467f41a49a8af4a94f96fad6, type: 3}
