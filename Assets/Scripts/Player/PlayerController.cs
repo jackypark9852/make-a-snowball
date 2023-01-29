@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    float speed = 0f;
+    Vector3 prevPosition;
+
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float maxRotationSpeed = 60f;
     [SerializeField] LayerMask terrainLayer;
@@ -19,6 +22,7 @@ public class PlayerController : MonoBehaviour
     bool isRolling = false;
 
     Animator anim;
+    [SerializeField] float minWalkSpeed = 0.1f;
 
     void Awake()
     {
@@ -27,6 +31,8 @@ public class PlayerController : MonoBehaviour
 
         playerControls = new PlayerInputActions();
         rollControl = playerControls.Player.Roll;
+
+        prevPosition = transform.position;
     }
 
     void FixedUpdate()
@@ -40,8 +46,12 @@ public class PlayerController : MonoBehaviour
             {
                 MoveInDirection(transform.forward, GetMouseDistance(mousePosition.Value));
                 FaceDirectionOfMovement(mouseDirection.Value);
+                
+                speed = Vector3.Distance(prevPosition, transform.position) / Time.deltaTime;
+                prevPosition = transform.position;
             }
         }
+        SetWalkingAnimation();
     }
 
     private Vector3? GetMousePosition()
@@ -95,24 +105,25 @@ public class PlayerController : MonoBehaviour
 
     private void FaceDirectionOfMovement(Vector3 direction)
     {
-        Quaternion newRotation = Quaternion.LookRotation(direction);
-        Quaternion deltaRotation = Quaternion.Inverse(transform.rotation) * newRotation;
-        float angle = 0.0f;
-        Vector3 axis = Vector3.zero;
-        deltaRotation.ToAngleAxis(out angle, out axis);
-        if (angle > maxRotationSpeed)
-        {
-            angle = maxRotationSpeed;
-        }
-        Quaternion clampedDeltaRotation = Quaternion.AngleAxis(angle, axis);
-        rb.MoveRotation(transform.rotation * clampedDeltaRotation);
+        Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
+        rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
 
-        // Look into
-        // Quaternion.FromToRotation
-        // Quaternion.RotateTowards
-
+        // For snap rotations:
         // Quaternion newRotation = Quaternion.LookRotation(direction);
         // rb.MoveRotation(newRotation);
+    }
+
+    private void SetWalkingAnimation()
+    {
+        Debug.Log(speed);
+        if (speed >= minWalkSpeed)
+        {
+            anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
     }
 
 

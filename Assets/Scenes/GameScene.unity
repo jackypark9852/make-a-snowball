@@ -369,11 +369,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2968112975540410014, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
+    - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2968112975540410015, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
+    - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -422,16 +422,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
-      propertyPath: moveSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: rotationSpeed
       value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2968112975540410019, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
-      propertyPath: maxRotationSpeed
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2968112975540410021, guid: bd9af30e8ae25864fa5f32a6070a13fe, type: 3}
       propertyPath: m_Camera
