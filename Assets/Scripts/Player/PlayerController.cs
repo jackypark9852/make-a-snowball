@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     float speed = 0f;
     Vector3 prevPosition;
 
-    [SerializeField] float moveSpeed = 5f;
+    [SerializeField] float maxMoveSpeed = 3f;
     [SerializeField] float maxNotRollingRotationSpeed = 360f;
     [SerializeField] float maxRollingRotationSpeed = 120f;
     [SerializeField] float deadzoneDistanceBeforeSpeedPerSecond = 0f;
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     InputAction rollControl;
 
     bool isRolling = false;
+    [SerializeField] GameObject snowballPrefab;
 
     Animator anim;
     [SerializeField] float minWalkSpeed = 0.1f;
@@ -88,13 +89,13 @@ public class PlayerController : MonoBehaviour
     private void MoveTowardsPosition(Vector3 position)
     {
         Vector3 newPos = new Vector3(position.x, transform.position.y, position.z);
-        rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, moveSpeed * Time.deltaTime));
+        rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, maxMoveSpeed * Time.deltaTime));
     }
 
     private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
-        Vector3 target = transform.position + direction * moveSpeed * Time.deltaTime;
-        float maxDistance = maxDistanceBeforeSpeedPerSecond * moveSpeed * Time.deltaTime;
+        Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
+        float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
         if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
         {
             maxDistance = 0f;
@@ -177,7 +178,8 @@ public class PlayerController : MonoBehaviour
     }
     private void FireSnowball()
     {
-        
+        GameObject snowballGO = Instantiate(snowballPrefab, transform.position, transform.rotation);
+        snowballGO.GetComponent<SnowballlLogic>().Fire(transform.forward * speed);
     }
 
     void OnEnable()
