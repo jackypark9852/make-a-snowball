@@ -53,11 +53,18 @@ public class RollingSpeedController : MonoBehaviour
 
     private void UpdateRadius()
     {
-        _radius = transform.lossyScale.x * _collider.radius; // Calculate the radius of the snowball using global scale and local radius
+        _radius = GetRadius(); // Calculate the radius of the snowball using global scale and local radius
+    }
+
+    private float GetRadius()
+    {
+        float radius = transform.lossyScale.x * _collider.radius; // Calculate the radius of the snowball using global scale and local radius
+        return radius;
     }
 
     private void UpdateLastPosition()
     {
         _lastPosition = transform.position;
     }
+
 }
