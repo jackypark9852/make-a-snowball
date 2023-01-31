@@ -88,12 +88,6 @@ public class PlayerController : MonoBehaviour
         return facedDirection.magnitude;
     }
 
-    private void MoveTowardsPosition(Vector3 position)
-    {
-        Vector3 newPos = new Vector3(position.x, transform.position.y, position.z);
-        rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, maxMoveSpeed * Time.deltaTime));
-    }
-
     private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
         Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
