@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
             {
                 MoveInDirection(transform.forward, GetMouseDistance(mousePosition.Value), deadzoneDistanceBeforeSpeedPerSecond, mousePosition.Value);
                 FaceDirectionOfMovement(mouseDirection.Value);
-                
+
                 speed = Vector3.Distance(prevPosition, transform.position) / Time.deltaTime;
                 prevPosition = transform.position;
             }
@@ -185,7 +185,7 @@ public class PlayerController : MonoBehaviour
     }
     private void RollSnowball()
     {
-        
+
     }
     private void FireSnowball()
     {
