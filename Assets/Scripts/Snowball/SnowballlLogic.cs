@@ -35,13 +35,13 @@ public class SnowballlLogic : MonoBehaviour
 
     private void Start()
     {
-        _lastPosition = transform.position;
+        _lastPosition = _model.transform.position;
     }
 
     private void Update()
     {
-        _velocity = (transform.position - _lastPosition) / Time.deltaTime;
-        _lastPosition = transform.position;
+        _velocity = (_model.transform.position - _lastPosition) / Time.deltaTime;
+        _lastPosition = _model.transform.position;
         UpdateSize();
     }
     public void StartRolling()

@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     bool isRolling = false;
     [SerializeField] GameObject snowballPrefab;
+    SnowballlLogic snowballLogic;
+    [SerializeField] Transform firePos;
 
     Animator anim;
     [SerializeField] float minWalkSpeed = 0.1f;
@@ -117,6 +119,13 @@ public class PlayerController : MonoBehaviour
 
     private void FaceDirectionOfMovement(Vector3 direction)
     {
+        /*
+        float angle = Vector3.Angle(transform.forward, direction);
+        if (angle < 3f)
+        {
+            return;
+        }
+        */
         Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
         float maxRotationSpeed;
         if (isRolling)
@@ -170,7 +179,9 @@ public class PlayerController : MonoBehaviour
 
     private void CreateSnowball()
     {
-        
+        GameObject snowballGO = Instantiate(snowballPrefab, firePos.position, transform.rotation);
+        snowballGO.transform.parent = firePos;
+        snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
     }
     private void RollSnowball()
     {
@@ -178,8 +189,7 @@ public class PlayerController : MonoBehaviour
     }
     private void FireSnowball()
     {
-        GameObject snowballGO = Instantiate(snowballPrefab, transform.position, transform.rotation);
-        snowballGO.GetComponent<SnowballlLogic>().Fire(transform.forward * speed);
+        snowballLogic.Fire(transform.forward * speed);
     }
 
     void OnEnable()

@@ -19,7 +19,7 @@ public class TransformFaceVelocity : MonoBehaviour
             return;
         }
 
-        transform.rotation = Quaternion.LookRotation(velocity);
+        // transform.rotation = Quaternion.LookRotation(velocity);
         _lastPosition = transform.position;
     }
     private Vector3 GetVelocity()
