@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SnowballlLogic : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SnowballlLogic : MonoBehaviour
     [Tooltip("The speed at which the snowball will despawn if it is not moving")]
     [SerializeField] private float _despawnSpeedThreshold = 0.1f;
     [SerializeField] private float _despawnTimeLimitSeconds = 20.0f;
+    public UnityEvent SnowballFired;
     private const float k_despawnCheckIntervalSeconds = 0.1f;
     private RollingSpeedController _rollingSpeedController;
     private SnowballCollision _snowballCollision;
@@ -51,6 +53,7 @@ public class SnowballlLogic : MonoBehaviour
 
     public void Fire(Vector3 initialVelocity)
     { // Called by the player when the snowball is fired
+        SnowballFired.Invoke(); // Invoke the snowball fired event
         transform.parent = null; // Detach the snowball from the player
 
         _rigidbody.isKinematic = false; // Turn off kinematic

@@ -120,7 +120,6 @@ public class PlayerController : MonoBehaviour
         }
         */
         Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
-        Debug.Log(rotation.eulerAngles); // the value is between 0 and 360   
         // if between 0 and 180, then rotate left 
         // if between 180 and 360, then rotate right
         // float maxRotationSpeed;
@@ -140,7 +139,6 @@ public class PlayerController : MonoBehaviour
         // rb.MoveRotation(newRotation);
         float angularVelocity = 30f;
         float angularAcceleration = 3f;
-        Debug.Log(Mathf.Abs(180f - rotation.eulerAngles.y) > 175f);
         if (Vector3.Angle(transform.forward, direction) < 5f)
         {
             Debug.Log("Here");
@@ -186,9 +184,10 @@ public class PlayerController : MonoBehaviour
     }
     private void OnRollControlExit(InputAction.CallbackContext context)
     {
-        FireSnowball();
-        isRolling = false;
-        anim.SetBool("isRolling", false);
+        if (isRolling)
+        {
+            FireSnowball();
+        }
     }
 
     private void CreateSnowball()
@@ -196,6 +195,7 @@ public class PlayerController : MonoBehaviour
         GameObject snowballGO = Instantiate(snowballPrefab, firePos.position, transform.rotation);
         snowballGO.transform.parent = firePos;
         snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
+        snowballLogic.SnowballFired.AddListener(OnSnowballFired);
     }
     private void RollSnowball()
     {
@@ -204,7 +204,17 @@ public class PlayerController : MonoBehaviour
     private void FireSnowball()
     {
         snowballLogic.Fire(transform.forward * speed);
+        OnSnowballFired();
     }
+
+    private void OnSnowballFired()
+    {
+        snowballLogic.SnowballFired.RemoveListener(OnSnowballFired); // Remove listener so that it doesn't get called again when the snowball invokes
+        isRolling = false;
+        anim.SetBool("isRolling", false);
+        snowballLogic = null;
+    }
+
 
     void OnEnable()
     {
