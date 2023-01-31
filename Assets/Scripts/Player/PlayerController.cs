@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deadzoneDistanceBeforeSpeedPerSecond = 0f;
     [SerializeField] LayerMask terrainLayer;
     Rigidbody rb;
-
-    Vector3 moveDir;
-
     PlayerInputActions playerControls;
     InputAction rollControl;
 
@@ -91,17 +88,19 @@ public class PlayerController : MonoBehaviour
     private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
         Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
-        float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
-        if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
-        {
-            maxDistance = 0f;
-        }
-        target = Vector3.MoveTowards(transform.position, target, maxDistance);
-        if ((intendedTarget - target).sqrMagnitude > (intendedTarget - transform.position).sqrMagnitude)
-        {
-            return;
-        }
-        rb.MovePosition(target);
+        // float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
+        // if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
+        // {
+        //     maxDistance = 0f;
+        // }
+        // target = Vector3.MoveTowards(transform.position, target, maxDistance);
+        // if ((intendedTarget - target).sqrMagnitude > (intendedTarget - transform.position).sqrMagnitude)
+        // {
+        //     return;
+        // }
+        // rb.MovePosition(target);
+
+        rb.velocity = direction * maxMoveSpeed;
     }
 
     /*
@@ -121,20 +120,41 @@ public class PlayerController : MonoBehaviour
         }
         */
         Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
-        float maxRotationSpeed;
-        if (isRolling)
-        {
-            maxRotationSpeed = maxRollingRotationSpeed;
-        }
-        else
-        {
-            maxRotationSpeed = maxNotRollingRotationSpeed;
-        }
-        rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
+        Debug.Log(rotation.eulerAngles); // the value is between 0 and 360   
+        // if between 0 and 180, then rotate left 
+        // if between 180 and 360, then rotate right
+        // float maxRotationSpeed;
+        // if (isRolling)
+        // {
+        //     maxRotationSpeed = maxRollingRotationSpeed;
+        // }
+        // else
+        // {
+        //     maxRotationSpeed = maxNotRollingRotationSpeed;
+        // }
+        // rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
+        // rb.angularVelocity  = new Vector3(0, something, 0); 
 
         // For snap rotations:
         // Quaternion newRotation = Quaternion.LookRotation(direction);
         // rb.MoveRotation(newRotation);
+        float angularVelocity = 30f;
+        float angularAcceleration = 3f;
+        Debug.Log(Mathf.Abs(180f - rotation.eulerAngles.y) > 175f);
+        if (Vector3.Angle(transform.forward, direction) < 5f)
+        {
+            Debug.Log("Here");
+            rb.angularVelocity = Vector3.zero;
+            return;
+        }
+        else if (rotation.eulerAngles.y > 180f)
+        {
+            rb.angularVelocity = new Vector3(0, Mathf.SmoothStep(rb.angularVelocity.y, -angularVelocity, angularAcceleration), 0);
+        }
+        else
+        {
+            rb.angularVelocity = new Vector3(0, Mathf.SmoothStep(rb.angularVelocity.y, angularVelocity, angularAcceleration), 0);
+        }
     }
 
     private void SetWalkingAnimation()
