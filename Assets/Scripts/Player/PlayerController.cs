@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
-        Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
+        // Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
         // float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
         // if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
         // {
@@ -132,16 +132,14 @@ public class PlayerController : MonoBehaviour
         //     maxRotationSpeed = maxNotRollingRotationSpeed;
         // }
         // rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
-        // rb.angularVelocity  = new Vector3(0, something, 0); 
 
-        // For snap rotations:
+        // // For snap rotations:
         // Quaternion newRotation = Quaternion.LookRotation(direction);
         // rb.MoveRotation(newRotation);
         float angularVelocity = 30f;
         float angularAcceleration = 3f;
         if (Vector3.Angle(transform.forward, direction) < 5f)
         {
-            Debug.Log("Here");
             rb.angularVelocity = Vector3.zero;
             return;
         }
@@ -167,15 +165,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    void Update()
-    {
-        if (isRolling)
-        {
-            RollSnowball();
-        }
-    }
-
     private void OnRollControlEnter(InputAction.CallbackContext context)
     {
         CreateSnowball();
@@ -197,10 +186,7 @@ public class PlayerController : MonoBehaviour
         snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
         snowballLogic.SnowballFired.AddListener(OnSnowballFired);
     }
-    private void RollSnowball()
-    {
 
-    }
     private void FireSnowball()
     {
         snowballLogic.Fire(transform.forward * speed);
