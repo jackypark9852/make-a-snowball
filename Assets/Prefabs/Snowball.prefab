@@ -61,10 +61,10 @@ MonoBehaviour:
   _fireOnCollision:
     serializedVersion: 2
     m_Bits: 136
-  _firedPhysicsMaterial: {fileID: 13400000, guid: a880995eb3aa15a4a869b710a374fa06, type: 2}
+  _firedPhysicsMaterial: {fileID: 13400000, guid: ec33105ff0bea6442ab0868e98edb0c8, type: 2}
   _model: {fileID: 7828463940611391345}
-  _growthRateBeforeFire: 0.01
-  _growthRateAfterFire: 0.05
+  _growthRateBeforeFire: 0.07
+  _growthRateAfterFire: 0.03
   _maxRadius: 1.25
   _despawnSpeedThreshold: 0.1
   _despawnTimeLimitSeconds: 20
@@ -166,13 +166,13 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7828463940611391345}
   serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0.01
-  m_AngularDrag: 2
-  m_UseGravity: 0
+  m_Mass: 100
+  m_Drag: 1
+  m_AngularDrag: 1
+  m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 4
+  m_Interpolate: 1
+  m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!135 &7828463940611391306
 SphereCollider:
@@ -181,7 +181,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7828463940611391345}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ec33105ff0bea6442ab0868e98edb0c8, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -236,5 +236,5 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 1000
   m_ConnectedMassScale: 1

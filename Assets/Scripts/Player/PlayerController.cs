@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     bool isRolling = false;
     [SerializeField] GameObject snowballPrefab;
     SnowballlLogic snowballLogic;
+    HingeJoint snowballHingeJoint;
     [SerializeField] Transform firePos;
 
     Animator anim;
@@ -182,23 +183,30 @@ public class PlayerController : MonoBehaviour
     private void CreateSnowball()
     {
         GameObject snowballGO = Instantiate(snowballPrefab, firePos.position, transform.rotation);
-        snowballGO.transform.parent = firePos;
+
         snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
         snowballLogic.SnowballFired.AddListener(OnSnowballFired);
+
+        snowballHingeJoint = snowballGO.GetComponentInChildren<HingeJoint>();
+        snowballHingeJoint.connectedBody = rb;
     }
 
     private void FireSnowball()
     {
-        snowballLogic.Fire(transform.forward * speed);
+        SnowballlLogic tempSnowballLogic = snowballLogic;
         OnSnowballFired();
+        tempSnowballLogic.Fire(transform.forward * speed);
     }
 
     private void OnSnowballFired()
     {
         snowballLogic.SnowballFired.RemoveListener(OnSnowballFired); // Remove listener so that it doesn't get called again when the snowball invokes
+        Destroy(snowballHingeJoint); // Destroy the hinge joint so that the snowball can move freely
+        snowballLogic = null;
+        snowballHingeJoint = null;
+
         isRolling = false;
         anim.SetBool("isRolling", false);
-        snowballLogic = null;
     }
 
 
