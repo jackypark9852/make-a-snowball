@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour
         snowballLogic.SnowballFired.AddListener(OnSnowballFired);
 
         snowballHingeJoint = snowballGO.GetComponentInChildren<HingeJoint>();
-        snowballHingeJoint.connectedBody = rb;
+        snowballHingeJoint.connectedBody = rb; // PlayerController will be responsible for unhinging the snowball when it is fired
     }
 
     private void FireSnowball()

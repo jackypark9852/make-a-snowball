@@ -47,7 +47,6 @@ public class SnowballlLogic : MonoBehaviour
     public void Fire(Vector3 initialVelocity)
     { // Called by the player when the snowball is fired
         SnowballFired.Invoke(); // Invoke the snowball fired event
-        Destroy(_hingeJoint); // Destroy the hinge joint to "unparent" snowball from parent 
         _collider.material = _firedPhysicsMaterial; // Set the physics material of the snowball to the fired physics material
 
         StartCoroutine(DespawnOnStop()); // Start the coroutine to despawn the snowball when it stops
