@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SnowballlLogic : MonoBehaviour
 {
@@ -15,33 +16,27 @@ public class SnowballlLogic : MonoBehaviour
     [Tooltip("The speed at which the snowball will despawn if it is not moving")]
     [SerializeField] private float _despawnSpeedThreshold = 0.1f;
     [SerializeField] private float _despawnTimeLimitSeconds = 20.0f;
+    public UnityEvent SnowballFired;
     private const float k_despawnCheckIntervalSeconds = 0.1f;
     private RollingSpeedController _rollingSpeedController;
     private SnowballCollision _snowballCollision;
     private Rigidbody _rigidbody;
     private Collider _collider;
+    private HingeJoint _hingeJoint;
     private bool _isFired = false;
-    private Vector3 _lastPosition;
-    private Vector3 _velocity;
     private void Awake()
     {
         _rollingSpeedController = _model.GetComponent<RollingSpeedController>();
         _rigidbody = _model.GetComponent<Rigidbody>();
         _collider = _model.GetComponent<Collider>();
         _snowballCollision = _model.GetComponent<SnowballCollision>();
+        _hingeJoint = GetComponent<HingeJoint>();
 
         _snowballCollision.CollisionEntered.AddListener(OnCollisionEnter); // Relay the collision event to the OnCollisionEnter method
     }
 
-    private void Start()
+    private void FixedUpdate()
     {
-        _lastPosition = _model.transform.position;
-    }
-
-    private void Update()
-    {
-        _velocity = (_model.transform.position - _lastPosition) / Time.deltaTime;
-        _lastPosition = _model.transform.position;
         UpdateSize();
     }
     public void StartRolling()
@@ -51,11 +46,7 @@ public class SnowballlLogic : MonoBehaviour
 
     public void Fire(Vector3 initialVelocity)
     { // Called by the player when the snowball is fired
-        transform.parent = null; // Detach the snowball from the player
-
-        _rigidbody.isKinematic = false; // Turn off kinematic
-        _rigidbody.useGravity = true; // Turn on gravity
-        _rigidbody.velocity = initialVelocity; // Set the initial velocity of the snowball
+        SnowballFired.Invoke(); // Invoke the snowball fired event
         _collider.material = _firedPhysicsMaterial; // Set the physics material of the snowball to the fired physics material
 
         StartCoroutine(DespawnOnStop()); // Start the coroutine to despawn the snowball when it stops
@@ -73,7 +64,7 @@ public class SnowballlLogic : MonoBehaviour
             if (!_isFired)
             {
                 _isFired = true;
-                Fire(_velocity);
+                Fire(_rigidbody.velocity);
             }
         }
     }
@@ -83,7 +74,7 @@ public class SnowballlLogic : MonoBehaviour
         float radius = GetRadius();
         if (radius < _maxRadius)
         {
-            float distanceTravelled = _velocity.magnitude * Time.deltaTime;
+            float distanceTravelled = (_rigidbody.velocity * Time.fixedDeltaTime).magnitude;
             float growthRate = _isFired ? _growthRateAfterFire : _growthRateBeforeFire;
             float newRadius = radius + growthRate * distanceTravelled;
             float scale = newRadius / radius;

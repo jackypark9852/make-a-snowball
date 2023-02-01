@@ -15,15 +15,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deadzoneDistanceBeforeSpeedPerSecond = 0f;
     [SerializeField] LayerMask terrainLayer;
     Rigidbody rb;
-
-    Vector3 moveDir;
-
     PlayerInputActions playerControls;
     InputAction rollControl;
 
     bool isRolling = false;
     [SerializeField] GameObject snowballPrefab;
     SnowballlLogic snowballLogic;
+    HingeJoint snowballHingeJoint;
     [SerializeField] Transform firePos;
 
     Animator anim;
@@ -88,26 +86,22 @@ public class PlayerController : MonoBehaviour
         return facedDirection.magnitude;
     }
 
-    private void MoveTowardsPosition(Vector3 position)
-    {
-        Vector3 newPos = new Vector3(position.x, transform.position.y, position.z);
-        rb.MovePosition(Vector3.MoveTowards(transform.position, newPos, maxMoveSpeed * Time.deltaTime));
-    }
-
     private void MoveInDirection(Vector3 direction, float maxDistanceBeforeSpeedPerSecond, float deadzoneDistanceBeforeSpeedPerSecond, Vector3 intendedTarget)
     {
-        Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
-        float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
-        if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
-        {
-            maxDistance = 0f;
-        }
-        target = Vector3.MoveTowards(transform.position, target, maxDistance);
-        if ((intendedTarget - target).sqrMagnitude > (intendedTarget - transform.position).sqrMagnitude)
-        {
-            return;
-        }
-        rb.MovePosition(target);
+        // Vector3 target = transform.position + direction * maxMoveSpeed * Time.deltaTime;
+        // float maxDistance = maxDistanceBeforeSpeedPerSecond * maxMoveSpeed * Time.deltaTime;
+        // if (maxDistanceBeforeSpeedPerSecond < deadzoneDistanceBeforeSpeedPerSecond)
+        // {
+        //     maxDistance = 0f;
+        // }
+        // target = Vector3.MoveTowards(transform.position, target, maxDistance);
+        // if ((intendedTarget - target).sqrMagnitude > (intendedTarget - transform.position).sqrMagnitude)
+        // {
+        //     return;
+        // }
+        // rb.MovePosition(target);
+
+        rb.velocity = direction * maxMoveSpeed;
     }
 
     /*
@@ -127,20 +121,37 @@ public class PlayerController : MonoBehaviour
         }
         */
         Quaternion rotation = Quaternion.FromToRotation(transform.forward, direction);
-        float maxRotationSpeed;
-        if (isRolling)
+        // if between 0 and 180, then rotate left 
+        // if between 180 and 360, then rotate right
+        // float maxRotationSpeed;
+        // if (isRolling)
+        // {
+        //     maxRotationSpeed = maxRollingRotationSpeed;
+        // }
+        // else
+        // {
+        //     maxRotationSpeed = maxNotRollingRotationSpeed;
+        // }
+        // rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
+
+        // // For snap rotations:
+        // Quaternion newRotation = Quaternion.LookRotation(direction);
+        // rb.MoveRotation(newRotation);
+        float angularVelocity = 30f;
+        float angularAcceleration = 3f;
+        if (Vector3.Angle(transform.forward, direction) < 5f)
         {
-            maxRotationSpeed = maxRollingRotationSpeed;
+            rb.angularVelocity = Vector3.zero;
+            return;
+        }
+        else if (rotation.eulerAngles.y > 180f)
+        {
+            rb.angularVelocity = new Vector3(0, Mathf.SmoothStep(rb.angularVelocity.y, -angularVelocity, angularAcceleration), 0);
         }
         else
         {
-            maxRotationSpeed = maxNotRollingRotationSpeed;
+            rb.angularVelocity = new Vector3(0, Mathf.SmoothStep(rb.angularVelocity.y, angularVelocity, angularAcceleration), 0);
         }
-        rb.MoveRotation(Quaternion.RotateTowards(transform.rotation, transform.rotation * rotation, maxRotationSpeed * Time.deltaTime));
-
-        // For snap rotations:
-        // Quaternion newRotation = Quaternion.LookRotation(direction);
-        // rb.MoveRotation(newRotation);
     }
 
     private void SetWalkingAnimation()
@@ -155,15 +166,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    void Update()
-    {
-        if (isRolling)
-        {
-            RollSnowball();
-        }
-    }
-
     private void OnRollControlEnter(InputAction.CallbackContext context)
     {
         CreateSnowball();
@@ -172,25 +174,41 @@ public class PlayerController : MonoBehaviour
     }
     private void OnRollControlExit(InputAction.CallbackContext context)
     {
-        FireSnowball();
-        isRolling = false;
-        anim.SetBool("isRolling", false);
+        if (isRolling)
+        {
+            FireSnowball();
+        }
     }
 
     private void CreateSnowball()
     {
         GameObject snowballGO = Instantiate(snowballPrefab, firePos.position, transform.rotation);
-        snowballGO.transform.parent = firePos;
-        snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
-    }
-    private void RollSnowball()
-    {
 
+        snowballLogic = snowballGO.GetComponent<SnowballlLogic>();
+        snowballLogic.SnowballFired.AddListener(OnSnowballFired);
+
+        snowballHingeJoint = snowballGO.GetComponentInChildren<HingeJoint>();
+        snowballHingeJoint.connectedBody = rb; // PlayerController will be responsible for unhinging the snowball when it is fired
     }
+
     private void FireSnowball()
     {
-        snowballLogic.Fire(transform.forward * speed);
+        SnowballlLogic tempSnowballLogic = snowballLogic;
+        OnSnowballFired();
+        tempSnowballLogic.Fire(transform.forward * speed);
     }
+
+    private void OnSnowballFired()
+    {
+        snowballLogic.SnowballFired.RemoveListener(OnSnowballFired); // Remove listener so that it doesn't get called again when the snowball invokes
+        Destroy(snowballHingeJoint); // Destroy the hinge joint so that the snowball can move freely
+        snowballLogic = null;
+        snowballHingeJoint = null;
+
+        isRolling = false;
+        anim.SetBool("isRolling", false);
+    }
+
 
     void OnEnable()
     {
