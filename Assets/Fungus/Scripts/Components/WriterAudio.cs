@@ -1,8 +1,8 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Fungus
 {
@@ -23,7 +23,7 @@ namespace Fungus
     public class WriterAudio : MonoBehaviour, IWriterListener
     {
         [Tooltip("Volume level of writing sound effects")]
-        [Range(0,1)]
+        [Range(0, 1)]
         [SerializeField] protected float volume = 1f;
 
         [Tooltip("Loop the audio when in Sound Effect mode. Has no effect in Beeps mode.")]
@@ -166,7 +166,7 @@ namespace Fungus
 
         protected virtual void Update()
         {
-            targetAudioSource.volume = Mathf.MoveTowards(targetAudioSource.volume, targetVolume, Time.deltaTime * 5f);
+            targetAudioSource.volume = Mathf.MoveTowards(targetAudioSource.volume, targetVolume, Time.unscaledDeltaTime * 5f);
         }
 
         #region IWriterListener implementation
@@ -188,7 +188,7 @@ namespace Fungus
             }
             Play(audioClip);
         }
-        
+
         public virtual void OnPause()
         {
             if (playingVoiceover)
@@ -197,7 +197,7 @@ namespace Fungus
             }
             Pause();
         }
-        
+
         public virtual void OnResume()
         {
             if (playingVoiceover)
@@ -206,7 +206,7 @@ namespace Fungus
             }
             Resume();
         }
-        
+
         public virtual void OnEnd(bool stopAudio)
         {
             if (stopAudio)

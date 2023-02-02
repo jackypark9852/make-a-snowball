@@ -28,7 +28,7 @@ namespace Fungus.Examples
             {
                 if (hit.collider == doorCol)
                 {
-                    gazeCounter += Time.deltaTime;
+                    gazeCounter += Time.unscaledDeltaTime;
                 }
                 else
                 {

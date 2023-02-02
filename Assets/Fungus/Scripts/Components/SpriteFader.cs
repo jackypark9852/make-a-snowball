@@ -1,8 +1,8 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-﻿using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace Fungus
 {
@@ -10,8 +10,8 @@ namespace Fungus
     /// Transitions a sprite from its current color to a target color.
     /// An offset can be applied to slide the sprite in while changing color.
     /// </summary>
-    [RequireComponent (typeof (SpriteRenderer))]
-    public class SpriteFader : MonoBehaviour 
+    [RequireComponent(typeof(SpriteRenderer))]
+    public class SpriteFader : MonoBehaviour
     {
         protected float fadeDuration;
         protected float fadeTimer;
@@ -29,9 +29,9 @@ namespace Fungus
             spriteRenderer = GetComponent<Renderer>() as SpriteRenderer;
         }
 
-        protected virtual void Update() 
+        protected virtual void Update()
         {
-            fadeTimer += Time.deltaTime;
+            fadeTimer += Time.unscaledDeltaTime;
             if (fadeTimer > fadeDuration)
             {
                 // Snap to final values

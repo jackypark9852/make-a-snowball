@@ -12,6 +12,7 @@ public class FlowChartTrigger : MonoBehaviour
     {
         if (other.transform.parent.GetComponent<PlayerController>() != null)
         {
+            Time.timeScale = 0f;
             block.Execute();
             if (destroyOnTrigger)
             {

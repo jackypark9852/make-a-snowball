@@ -1,11 +1,11 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-﻿using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections;
 using MoonSharp.Interpreter;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Fungus
 {
@@ -207,7 +207,7 @@ namespace Fungus
             {
                 foreach (var item in character.Portraits)
                 {
-                    if(item == null)
+                    if (item == null)
                     {
                         Debug.LogError("null in portrait list on character " + character.name);
                         continue;
@@ -255,7 +255,7 @@ namespace Fungus
             waitTimer = duration;
             while (waitTimer > 0f)
             {
-                waitTimer -= Time.deltaTime;
+                waitTimer -= Time.unscaledDeltaTime;
                 yield return null;
             }
 
@@ -384,7 +384,7 @@ namespace Fungus
             }
         }
 
-        
+
         /// <summary>
         /// Moves Character in front of other characters on stage
         /// </summary>
@@ -438,8 +438,8 @@ namespace Fungus
 
             options.character.State.SetPortraitImageBySprite(options.portrait);
             options.character.State.portraitImage.rectTransform.gameObject.SetActive(true);
-            
-            if(options.character.State.portraitImage.color != Color.white)
+
+            if (options.character.State.portraitImage.color != Color.white)
             {
                 LeanTween.color(options.character.State.portraitImage.rectTransform, Color.white, duration)
                     .setEase(stage.FadeEaseType)
@@ -639,7 +639,7 @@ namespace Fungus
         {
             Hide(PortraitUtil.ConvertTableToPortraitOptions(optionsTable, stage));
         }
-        
+
         /// <summary>
         /// Moves Character in front of other characters on stage
         /// </summary>

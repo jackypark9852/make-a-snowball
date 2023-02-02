@@ -1,12 +1,12 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.EventSystems;
 using System.Linq;
 using MoonSharp.Interpreter;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Fungus
 {
@@ -138,7 +138,7 @@ namespace Fungus
                     timeoutSlider.value = t;
                 }
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
 
                 yield return null;
             }
@@ -177,7 +177,7 @@ namespace Fungus
             StopAllCoroutines();
 
             //if something was shown notify that we are ending
-            if(nextOptionIndex != 0)
+            if (nextOptionIndex != 0)
                 MenuSignals.DoMenuEnd(this);
 
             nextOptionIndex = 0;
@@ -295,11 +295,11 @@ namespace Fungus
                 return false;
             }
             //if first option notify that a menu has started
-            if(nextOptionIndex == 0)
+            if (nextOptionIndex == 0)
                 MenuSignals.DoMenuStart(this);
 
             var button = cachedButtons[nextOptionIndex];
-            
+
             //move forward for next call
             nextOptionIndex++;
 
@@ -324,7 +324,7 @@ namespace Fungus
             }
 
             button.onClick.AddListener(action);
-            
+
             return true;
         }
 
@@ -373,7 +373,7 @@ namespace Fungus
                     timeoutSlider.value = t;
                 }
 
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.unscaledDeltaTime;
 
                 yield return null;
             }
@@ -401,7 +401,8 @@ namespace Fungus
         /// </summary>
         public virtual int DisplayedOptionsCount
         {
-            get {
+            get
+            {
                 int count = 0;
                 for (int i = 0; i < cachedButtons.Length; i++)
                 {
@@ -415,17 +416,17 @@ namespace Fungus
             }
         }
 
-		/// <summary>
-		/// Shuffle the parent order of the cached buttons, allows for randomising button order, buttons are auto reordered when cleared
-		/// </summary>
-		public void Shuffle(System.Random r)
-		{
-			for (int i = 0; i < CachedButtons.Length; i++)
-			{
-				CachedButtons[i].transform.SetSiblingIndex(r.Next(CachedButtons.Length));
-			}
-		}
+        /// <summary>
+        /// Shuffle the parent order of the cached buttons, allows for randomising button order, buttons are auto reordered when cleared
+        /// </summary>
+        public void Shuffle(System.Random r)
+        {
+            for (int i = 0; i < CachedButtons.Length; i++)
+            {
+                CachedButtons[i].transform.SetSiblingIndex(r.Next(CachedButtons.Length));
+            }
+        }
 
         #endregion
-    }    
+    }
 }
