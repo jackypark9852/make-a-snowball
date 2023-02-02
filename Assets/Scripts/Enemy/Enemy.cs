@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public Vector3 KnockbackDirection { get => knockbackDirection; set => knockbackDirection = value; }
 
 
+    [SerializeField] float damageDealt = 5f;
+
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody>();
@@ -80,6 +82,8 @@ public class Enemy : MonoBehaviour, IDamageable
         } else if (other.GetComponent<PlayerController>() != null)
         {
             // hurt player
+            PlayerController player = other.GetComponent<PlayerController>();
+            (player as IDamageable).TakeDamage(damageDealt);
         }
     }
 
@@ -90,6 +94,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
     void IDamageable.OnDeath()
     {
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 }
