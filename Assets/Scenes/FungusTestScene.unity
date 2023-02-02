@@ -558,6 +558,10 @@ PrefabInstance:
       propertyPath: nodeRect.width
       value: 138
       objectReference: {fileID: 0}
+    - target: {fileID: 928480386, guid: 18186f8209cd5a54788b9aee7ef71d7e, type: 3}
+      propertyPath: selectedBlocks.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1488081451998255533, guid: 18186f8209cd5a54788b9aee7ef71d7e, type: 3}
       propertyPath: m_Name
       value: Tutorial Fungus
