@@ -546,6 +546,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 928480382, guid: 18186f8209cd5a54788b9aee7ef71d7e, type: 3}
+      propertyPath: portrait
+      value: 
+      objectReference: {fileID: 21300000, guid: 2a8da6472ae52a64fb4580ca7866c588, type: 3}
     - target: {fileID: 928480385, guid: 18186f8209cd5a54788b9aee7ef71d7e, type: 3}
       propertyPath: blockName
       value: Start
