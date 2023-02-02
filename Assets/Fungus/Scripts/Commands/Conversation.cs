@@ -1,15 +1,15 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-﻿using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace Fungus
 {
     /// <summary>
     /// Do multiple say and portrait commands in a single block of text. Format is: [character] [portrait] [stage position] [hide] [<<< | >>>] [clear | noclear] [wait | nowait] [fade | nofade] [: Story text].
     /// </summary>
-    [CommandInfo("Narrative", 
+    [CommandInfo("Narrative",
                  "Conversation",
                  "Do multiple say and portrait commands in a single block of text. Format is: [character] [portrait] [stage position] [hide] [<<< | >>>] [clear | noclear] [wait | nowait] [fade | nofade] [: Story text]")]
     [AddComponentMenu("")]
@@ -23,7 +23,7 @@ namespace Fungus
         [SerializeField] protected BooleanData clearPrevious = new BooleanData(true);
         [SerializeField] protected BooleanData waitForInput = new BooleanData(true);
         [Tooltip("a wait for seconds added to each item of the conversation.")]
-        [SerializeField] protected FloatData waitForSeconds = new FloatData(0);
+        [SerializeField] protected FloatData WaitForSecondsRealtime = new FloatData(0);
         [SerializeField] protected BooleanData fadeWhenDone = new BooleanData(true);
 
         protected virtual void Start()
@@ -39,7 +39,7 @@ namespace Fungus
             conversationManager.ClearPrev = clearPrevious;
             conversationManager.WaitForInput = waitForInput;
             conversationManager.FadeDone = fadeWhenDone;
-            conversationManager.WaitForSeconds = waitForSeconds;
+            conversationManager.WaitForSecondsRealtime = WaitForSecondsRealtime;
 
             yield return StartCoroutine(conversationManager.DoConversation(subbedText));
 
@@ -65,8 +65,8 @@ namespace Fungus
 
         public override bool HasReference(Variable variable)
         {
-            return clearPrevious.booleanRef == variable || waitForInput.booleanRef == variable || 
-                waitForSeconds.floatRef == variable || fadeWhenDone.booleanRef == variable ||
+            return clearPrevious.booleanRef == variable || waitForInput.booleanRef == variable ||
+                WaitForSecondsRealtime.floatRef == variable || fadeWhenDone.booleanRef == variable ||
                 base.HasReference(variable);
         }
 
@@ -81,7 +81,7 @@ namespace Fungus
 
             var f = GetFlowchart();
 
-            if(!string.IsNullOrEmpty(conversationText.Value))
+            if (!string.IsNullOrEmpty(conversationText.Value))
                 f.DetermineSubstituteVariables(conversationText, referencedVariables);
         }
 #endif

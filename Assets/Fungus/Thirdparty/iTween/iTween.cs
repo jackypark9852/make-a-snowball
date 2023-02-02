@@ -5099,7 +5099,7 @@ namespace Fungus
         IEnumerator TweenDelay()
         {
             delayStarted = Time.time;
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSecondsRealtime(delay);
             if (wasPaused)
             {
                 wasPaused = false;
@@ -5137,7 +5137,7 @@ namespace Fungus
             if (delay > 0)
             {
                 delayStarted = Time.time;
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSecondsRealtime(delay);
             }
             loop = true;
             TweenStart();
@@ -5273,7 +5273,7 @@ namespace Fungus
         public static Vector2 Vector2Update(Vector2 currentValue, Vector2 targetValue, float speed)
         {
             Vector2 diff = targetValue - currentValue;
-            currentValue += (diff * speed) * Time.deltaTime;
+            currentValue += (diff * speed) * Time.unscaledDeltaTime;
             return (currentValue);
         }
 
@@ -5295,7 +5295,7 @@ namespace Fungus
         public static float FloatUpdate(float currentValue, float targetValue, float speed)
         {
             float diff = targetValue - currentValue;
-            currentValue += (diff * speed) * Time.deltaTime;
+            currentValue += (diff * speed) * Time.unscaledDeltaTime;
             return (currentValue);
         }
 
@@ -7863,7 +7863,7 @@ namespace Fungus
             }
             else
             {
-                runningTime += Time.deltaTime;
+                runningTime += Time.unscaledDeltaTime;
             }
 
             if (reverse)

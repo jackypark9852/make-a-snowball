@@ -1,14 +1,14 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-using UnityEditor;
-using UnityEditorInternal;
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
 
 namespace Fungus.EditorUtils
 {
@@ -24,7 +24,7 @@ namespace Fungus.EditorUtils
         protected Texture2D addIcon;
         protected Texture2D duplicateIcon;
         protected Texture2D deleteIcon;
-        
+
 
         private CommandListAdaptor commandListAdaptor;
         private SerializedProperty commandListProperty;
@@ -34,7 +34,7 @@ namespace Fungus.EditorUtils
         private string callersString;
         private bool callersFoldout;
 
-    
+
         protected virtual void OnEnable()
         {
             //this appears to happen when leaving playmode
@@ -93,7 +93,7 @@ namespace Fungus.EditorUtils
             EditorGUILayout.PrefixLabel(new GUIContent("Block Name"), EditorStyles.largeLabel);
             EditorGUI.BeginChangeCheck();
             blockNameProperty.stringValue = EditorGUILayout.TextField(blockNameProperty.stringValue);
-            if(EditorGUI.EndChangeCheck())
+            if (EditorGUI.EndChangeCheck())
             {
                 // Ensure block name is unique for this Flowchart
                 var block = target as Block;
@@ -156,7 +156,7 @@ namespace Fungus.EditorUtils
 
                 SerializedProperty suppressProp = serializedObject.FindProperty("suppressAllAutoSelections");
                 EditorGUILayout.PropertyField(suppressProp);
-                
+
                 EditorGUI.indentLevel++;
                 if (callersFoldout = EditorGUILayout.Foldout(callersFoldout, "Callers"))
                 {
@@ -166,9 +166,9 @@ namespace Fungus.EditorUtils
                     GUI.enabled = true;
                 }
                 EditorGUI.indentLevel--;
-                
+
                 EditorGUILayout.Space();
-                
+
                 DrawEventHandlerGUI(flowchart);
 
                 block.UpdateIndentLevels();
@@ -382,7 +382,7 @@ namespace Fungus.EditorUtils
 
         }
 
-        
+
 
         protected virtual void DrawEventHandlerGUI(Flowchart flowchart)
         {
@@ -428,7 +428,7 @@ namespace Fungus.EditorUtils
                     EditorGUI.BeginChangeCheck();
                     eventHandlerEditor.DrawInspectorGUI();
 
-                    if(EditorGUI.EndChangeCheck())
+                    if (EditorGUI.EndChangeCheck())
                     {
                         SelectedBlockDataStale = true;
                     }
@@ -498,7 +498,7 @@ namespace Fungus.EditorUtils
 
             for (int i = 0; i < blocks.Length; ++i)
             {
-				blockNames.Add(new GUIContent(blocks[i].BlockName));
+                blockNames.Add(new GUIContent(blocks[i].BlockName));
 
                 if (block == blocks[i])
                 {
@@ -831,7 +831,7 @@ namespace Fungus.EditorUtils
 
         protected IEnumerator RunBlock(Flowchart flowchart, Block targetBlock, int commandIndex, float delay)
         {
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSecondsRealtime(delay);
             flowchart.ExecuteBlock(targetBlock, commandIndex);
         }
 

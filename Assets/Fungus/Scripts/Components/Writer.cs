@@ -599,7 +599,7 @@ namespace Fungus
                         if (timeAccumulator <= 0f)
                         {
                             var waitTime = Mathf.Max(invWritingSpeed, Time.unscaledDeltaTime);
-                            yield return new WaitForSeconds(waitTime);
+                            yield return new WaitForSecondsRealtime(waitTime);
                             timeAccumulator += waitTime;
                         }
                     }
@@ -648,7 +648,7 @@ namespace Fungus
                         if (timeAccumulator <= 0f)
                         {
                             var waitTime = Mathf.Max(invWritingSpeed, Time.unscaledDeltaTime);
-                            yield return new WaitForSeconds(waitTime);
+                            yield return new WaitForSecondsRealtime(waitTime);
                             timeAccumulator += waitTime;
                         }
                     }

@@ -15,31 +15,31 @@ namespace Fungus
     [Flags]
     public enum ExecuteMethod
     {
-        AfterPeriodOfTime       = 1 << 0,
-        Start                   = 1 << 1,
-        Update                  = 1 << 2,
-        FixedUpdate             = 1 << 3,
-        LateUpdate              = 1 << 4,
-        OnDestroy               = 1 << 5,
-        OnEnable                = 1 << 6,
-        OnDisable               = 1 << 7,
+        AfterPeriodOfTime = 1 << 0,
+        Start = 1 << 1,
+        Update = 1 << 2,
+        FixedUpdate = 1 << 3,
+        LateUpdate = 1 << 4,
+        OnDestroy = 1 << 5,
+        OnEnable = 1 << 6,
+        OnDisable = 1 << 7,
         OnControllerColliderHit = 1 << 8,
-        OnParticleCollision     = 1 << 9,
-        OnJointBreak            = 1 << 10,
-        OnBecameInvisible       = 1 << 11,
-        OnBecameVisible         = 1 << 12,
-        OnTriggerEnter          = 1 << 13,
-        OnTriggerExit           = 1 << 14,
-        OnTriggerStay           = 1 << 15,
-        OnCollisionEnter        = 1 << 16,
-        OnCollisionExit         = 1 << 17,
-        OnCollisionStay         = 1 << 18,
-        OnTriggerEnter2D        = 1 << 19,
-        OnTriggerExit2D         = 1 << 20,
-        OnTriggerStay2D         = 1 << 21,
-        OnCollisionEnter2D      = 1 << 22,
-        OnCollisionExit2D       = 1 << 23,
-        OnCollisionStay2D       = 1 << 24,
+        OnParticleCollision = 1 << 9,
+        OnJointBreak = 1 << 10,
+        OnBecameInvisible = 1 << 11,
+        OnBecameVisible = 1 << 12,
+        OnTriggerEnter = 1 << 13,
+        OnTriggerExit = 1 << 14,
+        OnTriggerStay = 1 << 15,
+        OnCollisionEnter = 1 << 16,
+        OnCollisionExit = 1 << 17,
+        OnCollisionStay = 1 << 18,
+        OnTriggerEnter2D = 1 << 19,
+        OnTriggerExit2D = 1 << 20,
+        OnTriggerStay2D = 1 << 21,
+        OnCollisionEnter2D = 1 << 22,
+        OnCollisionExit2D = 1 << 23,
+        OnCollisionStay2D = 1 << 24,
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ namespace Fungus
         protected int m_ExecuteOnFrame;
 
         // Recursively build the full hierarchy path to this game object
-        protected static string GetPath(Transform current) 
+        protected static string GetPath(Transform current)
         {
             if (current.parent == null)
             {
@@ -99,11 +99,11 @@ namespace Fungus
 
         protected IEnumerator ExecutePeriodically()
         {
-            yield return new WaitForSeconds(executeAfterTime);
+            yield return new WaitForSecondsRealtime(executeAfterTime);
             Execute(ExecuteMethod.AfterPeriodOfTime);
             while (repeatExecuteTime)
             {
-                yield return new WaitForSeconds(repeatEveryTime);
+                yield return new WaitForSecondsRealtime(repeatEveryTime);
                 Execute(ExecuteMethod.AfterPeriodOfTime);
             }
         }
@@ -246,7 +246,7 @@ namespace Fungus
                 Execute();
             }
         }
-            
+
         #region Public members
 
         /// <summary>

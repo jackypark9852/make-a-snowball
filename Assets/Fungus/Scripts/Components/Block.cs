@@ -1,11 +1,11 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-using UnityEngine;
-using UnityEngine.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Fungus
 {
@@ -15,7 +15,7 @@ namespace Fungus
     public enum ExecutionState
     {
         /// <summary> No command executing </summary>
-        Idle,       
+        Idle,
         /// <summary> Executing a command </summary>
         Executing,
     }
@@ -70,7 +70,7 @@ namespace Fungus
         public bool SuppressNextAutoSelection { get; set; }
 
         [SerializeField] bool suppressAllAutoSelections = false;
-        
+
 
         protected virtual void Awake()
         {
@@ -115,7 +115,7 @@ namespace Fungus
             {
                 var command = commandList[i];
                 if (command == null)// Null entry will be deleted automatically later
-                
+
                 {
                     continue;
                 }
@@ -126,7 +126,7 @@ namespace Fungus
 #endif
         //editor only state for speeding up flowchart window drawing
         public bool IsSelected { get; set; }    //local cache of selectedness
-        public enum FilteredState { Full, Partial, None}
+        public enum FilteredState { Full, Partial, None }
         public FilteredState FilterState { get; set; }    //local cache of filteredness
         public bool IsControlSelected { get; set; } //local cache of being part of the control exclusion group
 
@@ -239,7 +239,7 @@ namespace Fungus
 
             bool suppressSelectionChanges = false;
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // Select the executing block & the first command
             if (suppressAllAutoSelections || SuppressNextAutoSelection)
             {
@@ -255,7 +255,7 @@ namespace Fungus
                     flowchart.AddSelectedCommand(commandList[0]);
                 }
             }
-            #endif
+#endif
 
             jumpToCommandIndex = commandIndex;
 
@@ -271,7 +271,7 @@ namespace Fungus
 
                 // Skip disabled commands, comments and labels
                 while (i < commandList.Count &&
-                      (!commandList[i].enabled || 
+                      (!commandList[i].enabled ||
                         commandList[i].GetType() == typeof(Comment) ||
                         commandList[i].GetType() == typeof(Label)))
                 {
@@ -333,17 +333,17 @@ namespace Fungus
                     yield return null;
                 }
 
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 if (flowchart.StepPause > 0f)
                 {
-                    yield return new WaitForSeconds(flowchart.StepPause);
+                    yield return new WaitForSecondsRealtime(flowchart.StepPause);
                 }
-                #endif
+#endif
 
                 command.IsExecuting = false;
             }
 
-            if(State == ExecutionState.Executing &&
+            if (State == ExecutionState.Executing &&
                 //ensure we aren't dangling from a previous stopage and stopping a future run
                 executionCountAtStart == executionCount)
             {

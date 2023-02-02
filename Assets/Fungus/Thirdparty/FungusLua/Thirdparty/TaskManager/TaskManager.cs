@@ -1,7 +1,8 @@
 // This code is part of the Fungus library (https://github.com/snozbot/fungus)
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
-﻿/// TaskManager.cs
+using System.Collections;
+/// TaskManager.cs
 /// Copyright (c) 2011, Ken Rockot  <k-e-n-@-REMOVE-CAPS-AND-HYPHENS-oz.gs>.  All rights reserved.
 /// Everyone is granted non-exclusive license to do anything at all with this code.
 ///
@@ -34,7 +35,7 @@
 ///
 /// IEnumerator TaskKiller(float delay, Task t)
 /// {
-///     yield return new WaitForSeconds(delay);
+///     yield return new WaitForSecondsRealtime(delay);
 ///     t.Stop();
 /// }
 ///
@@ -57,167 +58,179 @@
 /// Task also provides an event that is triggered when the coroutine exits.
 
 using UnityEngine;
-using System.Collections;
 
 // Using the Fungus namespace to minimize conflicts with other assets.
 namespace Fungus
 {
 
-	/// A Task object represents a coroutine.  Tasks can be started, paused, and stopped.
-	/// It is an error to attempt to start a task that has been stopped or which has
-	/// naturally terminated.
-	public class Task
-	{
-	    /// Returns true if and only if the coroutine is running.  Paused tasks
-	    /// are considered to be running.
-	    public bool Running {
-	        get {
-	            return task.Running;
-	        }
-	    }
+    /// A Task object represents a coroutine.  Tasks can be started, paused, and stopped.
+    /// It is an error to attempt to start a task that has been stopped or which has
+    /// naturally terminated.
+    public class Task
+    {
+        /// Returns true if and only if the coroutine is running.  Paused tasks
+        /// are considered to be running.
+        public bool Running
+        {
+            get
+            {
+                return task.Running;
+            }
+        }
 
-	    /// Returns true if and only if the coroutine is currently paused.
-	    public bool Paused {
-	        get {
-	            return task.Paused;
-	        }
-	    }
+        /// Returns true if and only if the coroutine is currently paused.
+        public bool Paused
+        {
+            get
+            {
+                return task.Paused;
+            }
+        }
 
-	    /// Delegate for termination subscribers.  manual is true if and only if
-	    /// the coroutine was stopped with an explicit call to Stop().
-	    public delegate void FinishedHandler(bool manual);
+        /// Delegate for termination subscribers.  manual is true if and only if
+        /// the coroutine was stopped with an explicit call to Stop().
+        public delegate void FinishedHandler(bool manual);
 
-	    /// Termination event.  Triggered when the coroutine completes execution.
-	    public event FinishedHandler Finished;
+        /// Termination event.  Triggered when the coroutine completes execution.
+        public event FinishedHandler Finished;
 
-	    /// Creates a new Task object for the given coroutine.
-	    ///
-	    /// If autoStart is true (default) the task is automatically started
-	    /// upon construction.
-	    public Task(IEnumerator c, bool autoStart = true)
-	    {
-	        task = TaskManager.CreateTask(c);
-	        task.Finished += TaskFinished;
-	        if(autoStart)
-	            Start();
-	    }
+        /// Creates a new Task object for the given coroutine.
+        ///
+        /// If autoStart is true (default) the task is automatically started
+        /// upon construction.
+        public Task(IEnumerator c, bool autoStart = true)
+        {
+            task = TaskManager.CreateTask(c);
+            task.Finished += TaskFinished;
+            if (autoStart)
+                Start();
+        }
 
-	    /// Begins execution of the coroutine
-	    public void Start()
-	    {
-	        task.Start();
-	    }
+        /// Begins execution of the coroutine
+        public void Start()
+        {
+            task.Start();
+        }
 
-	    /// Discontinues execution of the coroutine at its next yield.
-	    public void Stop()
-	    {
-	        task.Stop();
-	    }
+        /// Discontinues execution of the coroutine at its next yield.
+        public void Stop()
+        {
+            task.Stop();
+        }
 
-	    public void Pause()
-	    {
-	        task.Pause();
-	    }
+        public void Pause()
+        {
+            task.Pause();
+        }
 
-	    public void Unpause()
-	    {
-	        task.Unpause();
-	    }
+        public void Unpause()
+        {
+            task.Unpause();
+        }
 
-	    void TaskFinished(bool manual)
-	    {
-	        FinishedHandler handler = Finished;
-	        if(handler != null)
-	            handler(manual);
-	    }
+        void TaskFinished(bool manual)
+        {
+            FinishedHandler handler = Finished;
+            if (handler != null)
+                handler(manual);
+        }
 
-	    TaskManager.TaskState task;
-	}
+        TaskManager.TaskState task;
+    }
 
-	class TaskManager : MonoBehaviour
-	{
-	    public class TaskState
-	    {
-	        public bool Running {
-	            get {
-	                return running;
-	            }
-	        }
+    class TaskManager : MonoBehaviour
+    {
+        public class TaskState
+        {
+            public bool Running
+            {
+                get
+                {
+                    return running;
+                }
+            }
 
-	        public bool Paused  {
-	            get {
-	                return paused;
-	            }
-	        }
+            public bool Paused
+            {
+                get
+                {
+                    return paused;
+                }
+            }
 
-	        public delegate void FinishedHandler(bool manual);
-	        public event FinishedHandler Finished;
+            public delegate void FinishedHandler(bool manual);
+            public event FinishedHandler Finished;
 
-	        IEnumerator coroutine;
-	        bool running;
-	        bool paused;
-	        bool stopped;
+            IEnumerator coroutine;
+            bool running;
+            bool paused;
+            bool stopped;
 
-	        public TaskState(IEnumerator c)
-	        {
-	            coroutine = c;
-	        }
+            public TaskState(IEnumerator c)
+            {
+                coroutine = c;
+            }
 
-	        public void Pause()
-	        {
-	            paused = true;
-	        }
+            public void Pause()
+            {
+                paused = true;
+            }
 
-	        public void Unpause()
-	        {
-	            paused = false;
-	        }
+            public void Unpause()
+            {
+                paused = false;
+            }
 
-	        public void Start()
-	        {
-	            running = true;
-	            singleton.StartCoroutine(CallWrapper());
-	        }
+            public void Start()
+            {
+                running = true;
+                singleton.StartCoroutine(CallWrapper());
+            }
 
-	        public void Stop()
-	        {
-	            stopped = true;
-	            running = false;
-	        }
+            public void Stop()
+            {
+                stopped = true;
+                running = false;
+            }
 
-	        IEnumerator CallWrapper()
-	        {
-	            yield return null;
-	            IEnumerator e = coroutine;
-	            while(running) {
-	                if(paused)
-	                    yield return null;
-	                else {
-	                    if(e != null && e.MoveNext()) {
-	                        yield return e.Current;
-	                    }
-	                    else {
-	                        running = false;
-	                    }
-	                }
-	            }
+            IEnumerator CallWrapper()
+            {
+                yield return null;
+                IEnumerator e = coroutine;
+                while (running)
+                {
+                    if (paused)
+                        yield return null;
+                    else
+                    {
+                        if (e != null && e.MoveNext())
+                        {
+                            yield return e.Current;
+                        }
+                        else
+                        {
+                            running = false;
+                        }
+                    }
+                }
 
-	            FinishedHandler handler = Finished;
-	            if(handler != null)
-	                handler(stopped);
-	        }
-	    }
+                FinishedHandler handler = Finished;
+                if (handler != null)
+                    handler(stopped);
+            }
+        }
 
-	    static TaskManager singleton;
+        static TaskManager singleton;
 
-	    public static TaskState CreateTask(IEnumerator coroutine)
-	    {
-	        if(singleton == null) {
-	            GameObject go = new GameObject("TaskManager");
-	            singleton = go.AddComponent<TaskManager>();
-	        }
-	        return new TaskState(coroutine);
-	    }
-	}
+        public static TaskState CreateTask(IEnumerator coroutine)
+        {
+            if (singleton == null)
+            {
+                GameObject go = new GameObject("TaskManager");
+                singleton = go.AddComponent<TaskManager>();
+            }
+            return new TaskState(coroutine);
+        }
+    }
 
 }

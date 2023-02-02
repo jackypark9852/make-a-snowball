@@ -3,9 +3,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using System.Text;
 
 namespace Fungus
 {
@@ -42,7 +42,7 @@ namespace Fungus
         public bool ClearPrev { get; set; }
         public bool WaitForInput { get; set; }
         public bool FadeDone { get; set; }
-        public FloatData WaitForSeconds { get; internal set; }
+        public FloatData WaitForSecondsRealtime { get; internal set; }
 
         public ConversationManager()
         {
@@ -74,7 +74,7 @@ namespace Fungus
                 {
                     // We've come to the end of a token, so we find the token,
                     // trim it and add it to the collection of results...
-                    string result = currentToken.ToString().Trim( new [] { ' ', '\n', '\t', '\"'} );
+                    string result = currentToken.ToString().Trim(new[] { ' ', '\n', '\t', '\"' });
                     if (result != "") results.Add(result);
 
                     // We start a new token...
@@ -90,7 +90,7 @@ namespace Fungus
 
             // We've come to the end of the string, so we add the last token...
             string lastResult = currentToken.ToString().Trim();
-            if (lastResult != "") 
+            if (lastResult != "")
             {
                 results.Add(lastResult);
             }
@@ -201,9 +201,9 @@ namespace Fungus
             // Populate the story text to be written
             item.Text = text;
 
-            if(WaitForSeconds > 0)
+            if (WaitForSecondsRealtime > 0)
             {
-                item.Text += "{w=" + WaitForSeconds.ToString() +"}";
+                item.Text += "{w=" + WaitForSecondsRealtime.ToString() + "}";
             }
 
             if (sayParams == null || sayParams.Length == 0)
@@ -269,9 +269,9 @@ namespace Fungus
             }
 
             //if still no charcter was found but we found a partial we use it for backcompat but warn user
-            if(item.Character == null && partialCharacter != null)
+            if (item.Character == null && partialCharacter != null)
             {
-                Debug.LogWarning("Conversation Manager Character Partial Match; found '" + sayParams[characterParamIndexPartial] + 
+                Debug.LogWarning("Conversation Manager Character Partial Match; found '" + sayParams[characterParamIndexPartial] +
                     "' and will use " + partialCharacter.NameText + "\n Recommend modifying conversation and characters so they match exactly.");
 
                 characterIndex = characterParamIndexPartial;
@@ -291,7 +291,7 @@ namespace Fungus
                 for (int i = 0; i < sayParams.Length; i++)
                 {
                     if (i != characterIndex &&
-                        string.Compare(sayParams[i], "hide", true) == 0 )
+                        string.Compare(sayParams[i], "hide", true) == 0)
                     {
                         hideIndex = i;
                         item.Hide = true;
@@ -318,18 +318,18 @@ namespace Fungus
                     }
                 }
             }
-                
+
             // Next see if we can find a portrait for this character
             int portraitIndex = -1;
             if (item.Character != null)
             {
                 for (int i = 0; i < sayParams.Length; i++)
                 {
-                    if (item.Portrait == null && 
+                    if (item.Portrait == null &&
                         item.Character != null &&
-                        i != characterIndex && 
+                        i != characterIndex &&
                         i != hideIndex &&
-                        i != flipIndex) 
+                        i != flipIndex)
                     {
                         Sprite s = item.Character.GetPortrait(sayParams[i]);
                         if (s != null)
@@ -420,7 +420,7 @@ namespace Fungus
                     yield break;
                 }
 
-                if (currentCharacter != null && 
+                if (currentCharacter != null &&
                     currentCharacter != previousCharacter)
                 {
                     sayDialog.SetCharacter(currentCharacter);
@@ -478,9 +478,11 @@ namespace Fungus
 
                 previousCharacter = currentCharacter;
 
-                if (!string.IsNullOrEmpty(item.Text)) { 
+                if (!string.IsNullOrEmpty(item.Text))
+                {
                     exitSayWait = false;
-                    sayDialog.Say(item.Text, item.ClearPrev, item.WaitForInput, item.FadeDone, true, false, null, () => {
+                    sayDialog.Say(item.Text, item.ClearPrev, item.WaitForInput, item.FadeDone, true, false, null, () =>
+                    {
                         exitSayWait = true;
                     });
 
