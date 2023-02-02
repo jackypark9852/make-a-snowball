@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     float speed = 0f;
     Vector3 prevPosition;
@@ -26,6 +27,27 @@ public class PlayerController : MonoBehaviour
 
     Animator anim;
     [SerializeField] float minWalkSpeed = 0.1f;
+
+    // IDamageable related fields
+    float health;
+    [SerializeField] float maxHealth = 100f;
+    Vector3 knockbackDirection;
+    [SerializeField] HealthBar healthBar;
+
+    public float Health { get => health; set => health = value; }
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+        set
+        {
+            healthBar?.SetMaxHealth(value);
+            maxHealth = value;
+        }
+    }
+    public Vector3 KnockbackDirection { get => knockbackDirection; set => knockbackDirection = value; }
 
     void Awake()
     {
@@ -207,6 +229,17 @@ public class PlayerController : MonoBehaviour
 
         isRolling = false;
         anim.SetBool("isRolling", false);
+    }
+
+
+    void IDamageable.OnHealthUpdate(float damage)
+    {
+        healthBar?.SetHealth(Health);
+    }
+    
+    void IDamageable.OnDeath()
+    {
+        gameObject.SetActive(false);
     }
 
 

@@ -3,14 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float speed = 5f;
     private const float Delta = 1f;
     private Rigidbody _rigidBody;
     private bool _enabled = true;
-    
+
+    // IDamageable related fields
+    float health;
+    [SerializeField] float maxHealth = 10f;
+    Vector3 knockbackDirection;
+    [SerializeField] HealthBar healthBar;
+
+    public float Health { get => health; set => health = value; }
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+        set
+        {
+            healthBar?.SetMaxHealth(value);
+            maxHealth = value;
+        }
+    }
+    public Vector3 KnockbackDirection { get => knockbackDirection; set => knockbackDirection = value; }
+
 
     private void Awake()
     {
@@ -60,5 +81,15 @@ public class Enemy : MonoBehaviour
         {
             // hurt player
         }
+    }
+
+    void IDamageable.OnHealthUpdate(float damage)
+    {
+        healthBar?.SetHealth(Health);
+    }
+
+    void IDamageable.OnDeath()
+    {
+        gameObject.SetActive(false);
     }
 }
